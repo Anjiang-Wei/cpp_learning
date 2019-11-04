@@ -4,6 +4,7 @@
  *2. 复制构造函数为什么必须是引用？
  *   1) 参数实例化时也需要调用复制构造函数，这样引发了死循环
  *   2) const不是必须的，只是因为有时候会使用右值来进行初始化
+ *3. 一个类中实现了move，默认的=被delete了
  *
  *
  *
@@ -46,18 +47,17 @@ class MyString{
 			other._data = nullptr;
 			other._length = 0;
 		}
+		MyString& operator=(const MyString & other){
+			cout<<"= called"<<endl;	
+		}
 		size_t _length;
 		char *_data;
 };
 
 int main(){
 	MyString a(10);
-	MyString d(a);
-	MyString e(MyString(10));
-//	MyString && c = std::move(a);
-	MyString b(std::move(a));
-
-	cout<<a._length<<endl;
+	MyString && c = std::move(a);
+	MyString b(c);
 
 	return 0;
 }
